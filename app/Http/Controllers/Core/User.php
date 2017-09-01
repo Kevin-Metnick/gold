@@ -8,6 +8,7 @@ class User extends Controller
    public function show()
    {
    	  return view('login');
+
    }
 
    public function index()

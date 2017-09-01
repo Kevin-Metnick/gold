@@ -9,7 +9,9 @@ class LoginController extends User
 
 	public function Opertion()
 	{
-		Event::Opertion(__ClASS__,__FUNCTION__);
+		// Event::Opertion(__ClASS__,__FUNCTION__);
+		$Event = new Event();
+		$Event->Opertion(__ClASS__,__FUNCTION__);
 	}
 
 }
