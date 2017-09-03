@@ -3,6 +3,8 @@ namespace App\Http\Events;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use App\Http\Model\Login as LoginModel;
 
 class Login extends Controller
@@ -18,12 +20,10 @@ class Login extends Controller
 	    $config = config();
 	   	$config = $config->get('api');
         $config = $config["$url"];
-        unset($receive['_token']);
-        $receive['username']=$receive['name'];
-        unset($receive['name']);
+        
+        $receive = array_Opertion($receive, array("name"=>'username'));
         $where = "[";
         foreach ($receive as $key => $value) {
-        	// var_dump($key);
         	$where .= "\"".$key."\"=>\"".$value."\",";
         }
         $where .= "]";
@@ -34,19 +34,47 @@ class Login extends Controller
 
 		if (in_array("", $value)&&  in_array($this->key, $key)) {
 
-			echo json_encode(['msg'=>'null','reset'=>'没有数据']);
+			return (['msg'=>'null','reset'=>'没有数据']);
 		
 		} else {
-            echo "<pre>";
             $model = new LoginModel();
             $result = $model -> Opertion($config);
             if ($result) {
-            	echo json_encode(['msg'=>'null','reset'=>'没有数据']);
+                
+                    $userId = user_Encode($result->Id);
+                       setcookie('User-Session', $userId, time()+3600*2);
+            	return (['msg'=>'true','reset'=>'验证成功']);
             } else {
-            	echo json_encode(['msg'=>'null','reset'=>'没有数据']);
+            	return (['msg'=>'null','reset'=>'验证失败']);
             }
 		}
   		
 	}
+
+    public function userAdd()
+    {
+        // 获取注册信息
+        $receive = request()->post();
+         $mod = new Db();
+         $mod::beginTransaction();
+         $infoBool = Db::table('user_info')->insertGetId([
+             'username'=>$receive['name'],
+             'password'=>$receive['password'],
+             'email'=>$receive['email'],
+             'phone'=>$receive['name'],
+             ]);
+         if(empty($receive['parent'])) $receive['parent']='0';
+         // die;
+         $levelBool = Db::table('user_level')->insert(['id'=>$infoBool, 'level'=>$receive['parent']]);
+            
+         if ($infoBool && $levelBool) {
+             Db::commit();
+             return (['msg'=>'true','reset'=>'注册成功']);
+         } else {
+             Db::rollBack();
+            return (['msg'=>'false','reset'=>'注册失败']);
+         }
+    }
+
 
 }

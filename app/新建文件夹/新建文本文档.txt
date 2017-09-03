@@ -1,8 +1,0 @@
-<?php
-    
-function array_Opertion($array,$value)
-{
-    foreach ($array as $k => $v) {
-    	in_array($k, array_keys($value))?
-    }
-}

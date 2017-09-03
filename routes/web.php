@@ -12,8 +12,16 @@
 */
 
 Route::get('/', function () {
+  
     return view('welcome');
 });
 
-Route::get('/Login','Api\LoginController@show');
+
+Route::get('/Login', 'Api\LoginController@show');
 Route::post('/Login-Opertion','Api\LoginController@Opertion');
+Route::post('/Login-userAdd','Api\LoginController@userAdd');
+Route::group(['middleware' => ['login']], function () {
+Route::get('/User', 'Api\UserInfoController@userinfo')->middleware("login");
+    // Route::get('/Login', 'Api\LoginController@show');
+
+});

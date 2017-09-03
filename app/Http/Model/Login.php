@@ -16,7 +16,6 @@ class Login extends Model
 	public function Opertion($value)
 	{
 	   $mod = new Db();
-	   $mod::table('user_info');
 	   $sql = '$Result = ';
 	    // var_dump($value);
 	 	foreach ($value as $k => $v) {
@@ -27,6 +26,7 @@ class Login extends Model
 	 		}
 	 	}
 	 	$sql .=';'; 
+	 	// echo $sql;
 	 	eval( $sql);
 	 	return $Result;
 	}
