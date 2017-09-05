@@ -20,13 +20,14 @@ class Login extends Controller
 	    $config = config();
 	   	$config = $config->get('api');
         $config = $config["$url"];
-        
         $receive = array_Opertion($receive, array("name"=>'username'));
+
         $where = "[";
         foreach ($receive as $key => $value) {
         	$where .= "\"".$key."\"=>\"".$value."\",";
         }
         $where .= "]";
+
         $config['where']=$where;        
 
 	    $value = array_values($receive);
@@ -40,8 +41,7 @@ class Login extends Controller
             $model = new LoginModel();
             $result = $model -> Opertion($config);
             if ($result) {
-                
-                    $userId = user_Encode($result->Id);
+                    $userId = user_Encode($result->id);
                        setcookie('User-Session', $userId, time()+3600*2);
             	return (['msg'=>'true','reset'=>'验证成功']);
             } else {
@@ -64,7 +64,7 @@ class Login extends Controller
              'phone'=>$receive['name'],
              ]);
          if(empty($receive['parent'])) $receive['parent']='0';
-         // die;
+        
          $levelBool = Db::table('user_level')->insert(['id'=>$infoBool, 'level'=>$receive['parent']]);
             
          if ($infoBool && $levelBool) {
@@ -74,6 +74,19 @@ class Login extends Controller
              Db::rollBack();
             return (['msg'=>'false','reset'=>'注册失败']);
          }
+    }
+
+    /**
+     * 退出登录
+     * @return array 返回退出结果
+     */
+    public function UserExit()
+    {
+        if(setcookie('User-Session',1,time()-1)){
+            return ['msg'=>'true','result'=>'退出成功'];
+        } else {
+            return ['msg'=>'false','result'=>'退出失败'];
+        }
     }
 
 

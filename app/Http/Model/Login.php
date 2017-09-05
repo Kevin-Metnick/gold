@@ -26,7 +26,6 @@ class Login extends Model
 	 		}
 	 	}
 	 	$sql .=';'; 
-	 	// echo $sql;
 	 	eval( $sql);
 	 	return $Result;
 	}

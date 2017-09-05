@@ -14,8 +14,14 @@ class LoginController extends Controller
 		$Event = new Event();
 		$userInfo = $Event->Opertion(__ClASS__,__FUNCTION__);
 		if ($userInfo['msg']) {
-			$url = $_COOKIE['log'];
-			setcookie("log", 1, time()-1);
+
+			if(empty($_COOKIE['log'])){
+				$url = 'User';
+			}else{
+				$url = $_COOKIE['log'];
+				setcookie("log", 1, time()-1);				
+			}
+			
 			// 判断成功
 			return redirect($url);
 		}else{
@@ -49,5 +55,13 @@ class LoginController extends Controller
 	{
 
 	}
+
+
+	 public function userExit()
+    {
+        $Event = new Event();
+        $Exit = $Event->userExit();
+        return $Exit;
+    }
 
 }

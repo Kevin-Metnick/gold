@@ -14,12 +14,12 @@ class login
     {
     	if (Auth::guest()) {
             if (isset($_COOKIE['User-Session'])) {
-            	
+            	 return $next($request);
             } else {
             	setcookie("log",request()->url(),time()+3600);
                 return redirect()->guest('Login');
             }
         }
-        return $next($request);
     }
+    
 }
